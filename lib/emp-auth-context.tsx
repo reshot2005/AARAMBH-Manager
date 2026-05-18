@@ -60,6 +60,17 @@ export function EmpAuthProvider({ children }: { children: ReactNode }) {
     })()
   }, [refreshSession])
 
+  // Automatically refresh session when transitioning to dashboard if user is not loaded
+  useEffect(() => {
+    if (pathname?.startsWith("/dashboard") && !user) {
+      void (async () => {
+        setLoading(true)
+        await refreshSession()
+        setLoading(false)
+      })()
+    }
+  }, [pathname, user, refreshSession])
+
   // If session check finished and user is null while on dashboard, redirect to login
   useEffect(() => {
     if (!loading && !user && pathname?.startsWith("/dashboard")) {

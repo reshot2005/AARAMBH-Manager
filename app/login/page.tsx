@@ -4,9 +4,11 @@ import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Building2, Eye, EyeOff } from "lucide-react"
+import { useAuth } from "@/lib/auth-context"
 
 export default function LoginPage() {
   const router = useRouter()
+  const { refreshSession } = useAuth()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
@@ -29,6 +31,7 @@ export default function LoginPage() {
         setError(data.error || "Invalid credentials")
         return
       }
+      await refreshSession()
       if (data.role === "employee") {
         router.replace("/dashboard/my-profile")
       } else {
